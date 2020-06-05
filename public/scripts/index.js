@@ -54,16 +54,16 @@ function updateUserList(socketIds) {
   const activeUserContainer = document.getElementById("active-user-container");
 
   socketIds.forEach(socketId => {
-    const alreadyExistingUser = document.getElementById(socketId);
+    const alreadyExistingUser = document.getElementById(socketId.id);
     if (!alreadyExistingUser) {
-      const userContainerEl = createUserItemContainer(socketId);
+      const userContainerEl = createUserItemContainer(socketId.id);
 
       activeUserContainer.appendChild(userContainerEl);
     }
   });
 }
 
-const socket = io.connect('https://fitnessvideo.herokuapp.com/', {secure: true})// for local connection io.connect("localhost:5000");
+const socket = io.connect("localhost:5000") //io.connect('https://fitnessvideo.herokuapp.com/', {secure: true})// for local connection io.connect("localhost:5000");
 
 socket.on("update-user-list", ({ users }) => {
   updateUserList(users);
@@ -76,6 +76,10 @@ socket.on("remove-user", ({ socketId }) => {
     elToRemove.remove();
   }
 });
+
+socket.on("connectedToRoom", data => {
+  console.log(`${data}`)
+} )
 
 socket.on("call-made", async data => {
   if (getCalled) {

@@ -1,8 +1,8 @@
 import { Server } from "./server";
+import { RoomServer } from "./roomServer"
 
-const server = new Server();
+const server = new RoomServer();
 
 server.listen(port => {
-    console.log(`this si env = ${process.env.NODE_ENV} `)
     console.log(`Server is listening on http://localhost:${port}`);
 });

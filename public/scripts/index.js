@@ -22,7 +22,7 @@ function createVideoContainer(videoID,stream) {
   
 }
 
-const socket = io.connect("localhost:5000")// io.connect('https://fitnessvideo.herokuapp.com/', {secure: true})// for local connection io.connect("localhost:5000");
+const socket = io.connect('https://fitnessvideo.herokuapp.com/', {secure: true})// for local connection io.connect("localhost:5000");
 
 navigator.getUserMedia(
   { video: true, audio: true },

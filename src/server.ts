@@ -101,6 +101,7 @@ export class Server {
         fn(currentRoom, id);
         console.log('Room created, with #', currentRoom);
       } else {
+        if (this.userIds[currentRoom] == 4) {return}
         this.userIds[currentRoom] += 1;
         id = this.userIds[currentRoom];
         fn(currentRoom, id);
@@ -125,12 +126,14 @@ export class Server {
       }
     });
 
-    socket.on('disconnect', function () {
+    socket.on('disconnect',  () => {
+      console.log("server disconnect1")
       if (!currentRoom || !this.rooms[currentRoom]) {
         return;
       }
+      console.log("server disconnect")
       delete this.rooms[currentRoom][this.rooms[currentRoom].indexOf(socket)];
-      this.rooms[currentRoom].forEach(function (socket) {
+      this.rooms[currentRoom].forEach( (socket) => {
         if (socket) {
           socket.emit('peer.disconnected', { id: id });
         }

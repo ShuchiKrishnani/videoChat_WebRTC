@@ -22,6 +22,14 @@ function createVideoContainer(videoID,stream) {
   
 }
 
+function removeVideoContainer(videoID) {
+  const videoContainer = document.getElementById("video-container");
+  const videoEl = document.getElementById(videoID)
+  console.log(`emoved video ${videoID}`)
+  videoContainer.remove(videoEl)
+}
+
+
 const socket = io.connect('https://fitnessvideo.herokuapp.com/', {secure: true})// for local connection io.connect("localhost:5000");
 
 navigator.getUserMedia(
@@ -45,9 +53,9 @@ socket.on('peer.connected', function (params) {
   console.log("in peer connected")
   makeOffer(params.id);
 });
-
 socket.on('peer.disconnected', function (data) {
-  api.trigger('peer.disconnected', [data]);
+  console.log("in peer disconnect")
+  removeVideoContainer(`video_${data.id}`)
 });
 socket.on('msg', function (data) {
   console.log("in msg of client")
@@ -98,7 +106,7 @@ function getPeerConnection(id) {
   };
   pc.onaddstream = function (evnt) {
     console.log(`Received new stream,${id}`);
-    createVideoContainer(`video_${evnt.stream.id}`,evnt.stream)
+    createVideoContainer(`video_${id}`,evnt.stream)
   };
   return pc;
 }

@@ -22,7 +22,7 @@ function createVideoContainer(videoID,stream) {
   
 }
 
-const socket =  io.connect('https://fitnessvideo.herokuapp.com/', {secure: true})// for local connection io.connect("localhost:5000");
+const socket = io.connect("localhost:5000")// io.connect('https://fitnessvideo.herokuapp.com/', {secure: true})// for local connection io.connect("localhost:5000");
 
 navigator.getUserMedia(
   { video: true, audio: true },
@@ -31,7 +31,7 @@ navigator.getUserMedia(
     if (localVideo) {
       localVideo.srcObject = stream;
     }
-    this.stream = stream
+    this.finalStream = stream
     createRoom((roomid) => {
       console.log(`room id is ${roomid}`)
     })
@@ -92,20 +92,19 @@ function getPeerConnection(id) {
   } 
   var pc = new RTCPeerConnection(iceConfig)
   peerConnections[id] = pc
-  stream.getTracks().forEach(track => pc.addTrack(track, stream));
+  finalStream.getTracks().forEach(track => pc.addTrack(track, finalStream));
   pc.onicecandidate = function (evnt) {
     socket.emit('msg', { by: currentId, to: id, ice: evnt.candidate, type: 'ice' });
   };
   pc.onaddstream = function (evnt) {
-    console.log('Received new stream');
-    createVideoContainer(id,stream)
+    console.log(`Received new stream,${id}`);
+    createVideoContainer(`video_${evnt.stream.id}`,evnt.stream)
   };
   return pc;
 }
 
 function makeOffer(id) {
   var pc = getPeerConnection(id);
-  console.log("in make offer")
   pc.createOffer(function (sdp) {
     pc.setLocalDescription(sdp);
     console.log('Creating an offer for', id);

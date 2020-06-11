@@ -109,7 +109,7 @@ export class Server {
           s.emit('peer.connected', { id: id });
         });
        // this.io.sockets.in(room).emit('peer.connected', { id: id })
-        room[id] = socket;
+       this.rooms[currentRoom][id] = socket;
         console.log('Peer connected to room', currentRoom, 'with #', id);
       }
     });
